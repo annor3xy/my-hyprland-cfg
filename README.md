@@ -1,6 +1,6 @@
 /2094 - arch linux system
 
-/2026-07-01_13-22.png
+![screenshot](2026-07-01_13-22.png)
 
 configuration
 1. shell - zsh
