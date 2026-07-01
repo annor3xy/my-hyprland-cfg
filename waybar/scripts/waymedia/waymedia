@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+
+import os
+import json
+from os.path import expanduser
+import subprocess
+import re
+
+
+def get_output(command) -> str:
+    return subprocess.run(command, shell=True, capture_output=True, text=True).stdout.strip()
+
+
+jsonc_path = f"{expanduser('~')}/.config/waybar/config"
+json_path = f"{expanduser('~')}/.config/waybar/config"
+
+if os.path.exists(jsonc_path):
+    config_path = jsonc_path
+
+elif os.path.exists(json_path):
+    config_path = json_path
+
+else:
+    exit(1)
+
+
+with open(config_path, "r", encoding="utf-8") as file:
+    config_content = file.read()
+
+cleaned_config_content = re.sub(r'//.*', '', config_content)
+cleaned_config_content = re.sub(r'/\*.*?\*/', '', config_content, flags=re.DOTALL)
+config = json.loads(cleaned_config_content).get("custom/waymedia")
+
+
+pause_icon = config.get("pause-icon", "   ")
+play_icon = config.get("play-icon", "   ")
+formatting = config.get("template", "{icon}   {title}")
+divider = config.get("divider", " - ")
+limit = config.get("limit", 60)
+empty_message = config.get("empty-message", "")
+
+
+metadata = get_output("playerctl metadata") 
+players = subprocess.run("playerctl --list-all", shell=True, capture_output=True, text=True).stdout.split("\n")
+
+for player in players:
+     status = get_output(f"playerctl status -p {player}")
+
+     if status != "Stopped" and status != "":
+        icon = play_icon if status == "Paused" else pause_icon
+        css_class = "paused" if status == "Paused" else "playing"
+
+        artist = get_output("playerctl metadata --format '{{artist}}'")
+        title = get_output("playerctl metadata --format '{{title}}'")
+
+
+        if len(artist) == 0 and len(title) == 0:
+            break
+
+        if len(artist) == 0:
+            divider = ""
+
+        text = formatting.replace("{icon}", icon).replace("{title}", title).replace("{divider}", divider).replace("{artist}", artist).strip().replace("&", "&amp;").replace("{}", "")
+
+        tooltip = text.replace(icon, "")
+
+        if len(text) > limit:
+            text = f"{text[:limit - 3]}..."
+
+        print(json.dumps({"text": text, "tooltip": tooltip, "class": css_class}),flush=True)
+        exit(0)
+
+print(json.dumps({"text": empty_message, "tooltip": "", "class": "nothing"}),flush=True)
+exit(0)

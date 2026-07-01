@@ -1,0 +1,107 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 21,
+    "modules-left": [
+        "hyprland/workspaces",
+        "tray"
+    ],
+    "modules-center": [
+        "temperature",
+        "cpu",
+    	"custom/waymedia",
+        "battery",
+        "memory"
+    ],
+    "modules-right": [
+        "hyprland/language",
+        "pulseaudio",
+        "pulseaudio#microphone",
+        "backlight",
+        "clock"
+    ],
+    "hyprland/workspaces": {
+        "format": "{icon}",
+
+        "persistent-workspaces": {
+            "*": 7
+        }
+    },
+
+    "memory": {
+        "format": "  {used:0.1f}Gb",
+        "tooltip": false,
+	"interval": 3
+    },
+    "battery": {
+        "format": "{icon}   {capacity}%",
+        "format-icons": [
+        "",
+        "",
+        "",
+        "",
+        "" 
+        ],
+        "tooltip": true
+    },
+    "hyprland/language": {
+        "format": "{}",
+        "format-en": "us",
+        "format-ru": "ru",
+        "on-click": "hyprctl switchxkblayout current next"
+    },
+    "pulseaudio": {
+        "format": "   {volume}%",
+        "format-muted": "muted",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "tooltip": false
+    },
+    "pulseaudio#microphone": {
+        "format": "{format_source}",
+        "format-source": " {volume}%",
+        "format-source-muted": "muted",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ -l 1.00 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ -l 1.00 5%-",
+        "tooltip": false
+    },
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%Y-%m-%d}",
+        "tooltip": false
+    },
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "  {percent}%",
+        "tooltip": false
+    },
+    "temperature": {
+    	"hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
+    	"format": " {temperatureC}°C",
+    	"interval": 3,
+    	"tooltip": false
+    },
+    "cpu": {
+        "format": "  {usage}%",
+        "tooltip": true,
+        "interval": 3,
+        "tooltip": false
+    },
+    "tray": {
+        "icon-size": 16,
+        "spacing": 10
+    },
+    "custom/waymedia": {
+        "format": "{}",
+        "formatting": "{icon}{title}",
+        "exec": "~/.config/waybar/scripts/waymedia/waymedia",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "playerctl play-pause",
+        "pause-icon": "",
+        "play-icon": "",
+        "limit": 20,
+        "min-length": 20,
+        "empty-message": "arch linux"
+    }
+}

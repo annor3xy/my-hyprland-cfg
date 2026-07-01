@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+
+import os
+import json
+from os.path import expanduser
+import subprocess
+import re
+
+
+
+def get_output(command) -> str:
+    return subprocess.run(command, shell=True, capture_output=True, text=True).stdout.strip()
+
+
+jsonc_path = f"{expanduser('~')}/.config/waybar/config"
+json_path = f"{expanduser('~')}/.config/waybar/config"
+
+if os.path.exists(jsonc_path):
+    config_path = jsonc_path
+
+elif os.path.exists(json_path):
+    config_path = json_path
+
+else:
+    exit(1)
+
+
+with open(config_path, "r", encoding="utf-8") as file:
+    config_content = file.read()
+
+cleaned_config_content = re.sub(r'//.*', '', config_content)
+cleaned_config_content = re.sub(r'/\*.*?\*/', '', config_content, flags=re.DOTALL)
+config = json.loads(cleaned_config_content).get("custom/waymedia-buttons")
+
+
+play_icon = config.get("play-icon", "  ")  
+pause_icon = config.get("pause-icon","  ")  
+skip_icon = config.get("skip-icon"," 󰒭 ")
+previous_icon = config.get("previous-icon"," 󰒮 ")  
+
+
+metadata = get_output("playerctl metadata") 
+
+players = subprocess.run("playerctl --list-all", shell=True, capture_output=True, text=True).stdout.split("\n")
+
+for player in players:
+    status = get_output(f"playerctl status -p {player}")
+
+    if status != "Stopped" and status != "":
+        icon = play_icon if status == "Paused" else pause_icon
+        artist = get_output("playerctl metadata --format '{{artist}}'")
+        title = get_output("playerctl metadata --format '{{title}}'")
+        css_class = "paused" if status == "Paused" else "playing"
+
+        if len(artist) == 0:
+            divider = ""
+
+        text = f"{previous_icon} {icon} {skip_icon}"
+
+        print(json.dumps({"text": text, "tooltip": status, "class": css_class}),flush=True)
+        exit(0)
+
+
+print(json.dumps({"text": "", "tooltip": "", "class": "nothing"}),flush=True)
+exit(0)   

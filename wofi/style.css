@@ -1,0 +1,23 @@
+window {
+    background-color: rgba(27, 26, 28, 0.7);
+    color: #ddded1;
+    border-radius: 7px;
+}
+#input {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: none;
+    border-radius: 7px;   
+}
+#input:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+#text{
+    background: none;
+}
+#entry:selected {
+    background-color: rgba(112, 112, 112, 0.2);
+    outline: none;
+    border: none;
+}

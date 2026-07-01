@@ -1,0 +1,43 @@
+* {
+    border: none;
+    font-size: 13px;
+    color: white;
+}
+
+window#waybar {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+#workspaces button {
+    padding: 0 5px;
+    color: #111111;
+    border-radius: 0;
+}
+
+#workspaces button.active {
+    background-color: rgba(112, 112, 112, 0.2);
+    font-weight: bold;
+    border-bottom: 2px solid #ddded1;
+}
+#temperature,
+#memory,
+#battery,
+#language,
+#pulseaudio,
+#clock,
+#backlight,
+#network,
+#cpu {
+    padding: 0 6px;
+    background-color: transparent;
+}
+
+#tray {
+    margin: 0 40px;
+    background-color: transparent;
+}
+
+#custom-waymedia{
+    margin: 0 64px;
+    background-color: transparent;
+}
